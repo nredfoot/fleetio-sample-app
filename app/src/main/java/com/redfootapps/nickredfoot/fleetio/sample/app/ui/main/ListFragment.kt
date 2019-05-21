@@ -8,13 +8,19 @@ import android.widget.TextView
 import android.support.v4.app.Fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.widget.Button
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
 import com.redfootapps.nickredfoot.fleetio.sample.app.models.FuelEntry
 import com.redfootapps.nickredfoot.fleetio.sample.app.services.FleetioApiService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_main.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -22,10 +28,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * A placeholder fragment containing a simple view.
  */
-class PlaceholderFragment : Fragment() {
+class ListFragment : Fragment() {
 
     private lateinit var pageViewModel: PageViewModel
 
+    private var listAdapter: ListAdapter? = null
+    private var fuelEntriesArrayList: ArrayList<FuelEntry>? = null
     private var compositeDisposable: CompositeDisposable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,21 +49,28 @@ class PlaceholderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_main, container, false)
-        val textView: TextView = root.findViewById(R.id.section_label)
-        pageViewModel.text.observe(this, Observer<String> {
-            textView.text = it
-        })
-        val button: Button = root.findViewById(R.id.button)
-        button.setOnClickListener {
-            loadFuelEntries()
-        }
+
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecylerView()
+        loadFuelEntries()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         compositeDisposable?.clear()
+    }
+
+    // Setup
+
+    private fun setupRecylerView() {
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
     }
 
     companion object {
@@ -70,8 +85,8 @@ class PlaceholderFragment : Fragment() {
          * number.
          */
         @JvmStatic
-        fun newInstance(sectionNumber: Int): PlaceholderFragment {
-            return PlaceholderFragment().apply {
+        fun newInstance(sectionNumber: Int): ListFragment {
+            return ListFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SECTION_NUMBER, sectionNumber)
                 }
@@ -80,27 +95,35 @@ class PlaceholderFragment : Fragment() {
     }
 
     fun loadFuelEntries() {
+        val gson = GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create()
+
         val requestInterface = Retrofit.Builder()
             .baseUrl("https://secure.fleetio.com/api/v1/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
             .create(FleetioApiService::class.java)
 
-
         compositeDisposable?.add(requestInterface.getFuelEntries()
-            .doOnError {
-                val fail = true
-            }
+            .doOnError(this::handleError)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe(this::handleResponse))
+
+
     }
 
     fun handleResponse(fuelEntries: List<FuelEntry>) {
-        val test = ArrayList(fuelEntries)
-        if (test.size > 0) {
-            val success = true
+        fuelEntriesArrayList = ArrayList(fuelEntries)
+        fuelEntriesArrayList?.let {
+            listAdapter = ListAdapter(it)
+            recyclerView.adapter = listAdapter
         }
+    }
+
+    fun handleError(throwable: Throwable) {
+        val error = true
     }
 }
