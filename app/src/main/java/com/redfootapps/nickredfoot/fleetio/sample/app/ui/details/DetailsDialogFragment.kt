@@ -1,0 +1,110 @@
+package com.redfootapps.nickredfoot.fleetio.sample.app.ui.details
+
+import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.redfootapps.nickredfoot.fleetio.sample.app.R
+import kotlinx.android.synthetic.main.fragment_list.*
+import java.io.Serializable
+
+class DetailsDialogFragment : DialogFragment() {
+
+    // Models
+
+    data class DetailsDialogModel(
+        var date: String? = "",
+        var vehicleName: String? = "",
+        var cost: String? = "",
+        var costPerMile: String? = "",
+        var gallons: String? = "",
+        var fuelType: String? = "",
+        var pricePerGallon: String? = "",
+        var vendor: String? = "",
+        var referenceNumber: String? = ""
+    ) : Serializable
+
+    // Instance Variables
+
+    private var detailsAdapter: DetailsAdapter? = null
+
+    lateinit var detailsDialogModel: DetailsDialogModel
+
+    // Constructor
+
+    companion object {
+        @JvmStatic
+        fun newInstance(detailsDialogModel: DetailsDialogModel): DetailsDialogFragment {
+            val detailsFragment = DetailsDialogFragment()
+
+            val args = Bundle()
+            args.putSerializable("details_dialog_model", detailsDialogModel)
+            detailsFragment.arguments = args
+
+            return detailsFragment
+        }
+    }
+
+    // Lifecycle
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        detailsDialogModel = arguments?.getSerializable("details_dialog_model") as DetailsDialogModel
+    }
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_details_dialog, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+    }
+
+    // Setup
+
+    fun setupRecyclerView() {
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                context!!,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+
+        detailsAdapter = DetailsAdapter(generateDetailModelsList(detailsDialogModel))
+        recyclerView.adapter = detailsAdapter
+    }
+
+    // Helpers
+
+    fun generateDetailModelsList(detailsDialogModel: DetailsDialogModel): ArrayList<DetailsAdapter.DetailsModel> {
+        val dateDetailsModel = DetailsAdapter.DetailsModel("Date", detailsDialogModel.date ?: "N/A")
+        val vehicleNameDetailsModel = DetailsAdapter.DetailsModel("Vehicle Name", detailsDialogModel.vehicleName ?: "N/A")
+        val costNameDetailsModel = DetailsAdapter.DetailsModel("Cost", detailsDialogModel.cost ?: "N/A")
+        val costPerMileNameDetailsModel = DetailsAdapter.DetailsModel("Cost Per Mile", detailsDialogModel.costPerMile ?: "N/A")
+        val gallonsDetailsModel = DetailsAdapter.DetailsModel("Gallons", detailsDialogModel.gallons ?: "N/A")
+        val fuelTypeDetailsModel = DetailsAdapter.DetailsModel("Fuel Type", detailsDialogModel.fuelType ?: "N/A")
+        val pricePerGallonDetailsModel = DetailsAdapter.DetailsModel("Price Per Gallon", detailsDialogModel.pricePerGallon ?: "N/A")
+        val vendorDetailsModel = DetailsAdapter.DetailsModel("Vendor", detailsDialogModel.vendor ?: "N/A")
+        val referenceNumberDetailsModel = DetailsAdapter.DetailsModel("Reference Number", detailsDialogModel.referenceNumber ?: "N/A")
+
+        return arrayListOf(dateDetailsModel,
+            vehicleNameDetailsModel,
+            costNameDetailsModel,
+            costPerMileNameDetailsModel,
+            gallonsDetailsModel,
+            fuelTypeDetailsModel,
+            pricePerGallonDetailsModel,
+            vendorDetailsModel,
+            referenceNumberDetailsModel)
+    }
+}

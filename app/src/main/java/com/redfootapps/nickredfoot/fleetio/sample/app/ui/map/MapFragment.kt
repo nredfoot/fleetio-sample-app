@@ -9,7 +9,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.redfootapps.nickredfoot.fleetio.sample.app.models.FuelEntry
-import com.redfootapps.nickredfoot.fleetio.sample.app.models.Geolocation
 import com.redfootapps.nickredfoot.fleetio.sample.app.services.FleetioApiService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -24,9 +23,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
+import com.redfootapps.nickredfoot.fleetio.sample.app.router.AppRouter
+import com.redfootapps.nickredfoot.fleetio.sample.app.router.AppRouterInterface
+import com.redfootapps.nickredfoot.fleetio.sample.app.ui.details.DetailsDialogFragment
 
 
 class MapFragment: Fragment() {
+
+    lateinit var router: AppRouterInterface
 
     private var compositeDisposable: CompositeDisposable? = null
     private var markerHashMap: HashMap<Marker, FuelEntry> = HashMap()
@@ -44,6 +48,8 @@ class MapFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        router = AppRouter(this)
 
         compositeDisposable = CompositeDisposable()
     }
@@ -69,18 +75,6 @@ class MapFragment: Fragment() {
         super.onPause()
 
         mapView.onPause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        mapView.onDestroy()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-
-        mapView.onLowMemory()
     }
 
     fun loadFuelEntries() {
@@ -135,8 +129,21 @@ class MapFragment: Fragment() {
             googleMap.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
                 override fun onMarkerClick(marker: Marker): Boolean {
                     if (markerHashMap.contains(marker)) {
-                        val fuelEntry = markerHashMap.get(marker)
-                        // Navigate to details
+                        markerHashMap[marker]?.let { fuelEntry ->
+                            val detailsDialogModel = DetailsDialogFragment.DetailsDialogModel(
+                                fuelEntry.formattedDateString(),
+                                fuelEntry.vehicleName ?: "N/A",
+                                if (fuelEntry.totalAmount != null) context?.getString(R.string.money_format, fuelEntry.totalAmount) else "N/A",
+                                if (fuelEntry.costPerMile != null) context?.getString(R.string.money_format, fuelEntry.costPerMile) else "N/A",
+                                if (fuelEntry.usGallons != null) context?.getString(R.string.money_format, fuelEntry.usGallons) else "N/A",
+                                fuelEntry.fuelTypeName,
+                                if (fuelEntry.pricePerVolumeUnit != null) context?.getString(R.string.money_format, fuelEntry.pricePerVolumeUnit) else "N/A",
+                                fuelEntry.vendorName,
+                                fuelEntry.reference
+                            )
+
+                            router.navigateToDetails(detailsDialogModel)
+                        }
                     }
                     return false
                 }

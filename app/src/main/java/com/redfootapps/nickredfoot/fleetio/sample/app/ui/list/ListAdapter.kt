@@ -7,8 +7,15 @@ import android.view.ViewGroup
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
 import com.redfootapps.nickredfoot.fleetio.sample.app.models.FuelEntry
 import kotlinx.android.synthetic.main.item_list.view.*
+import java.lang.ref.WeakReference
 
-class ListAdapter (private val fuelEntries: ArrayList<FuelEntry>) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+interface ListAdapterListener {
+    fun itemSelected(fuelEntry: FuelEntry)
+}
+
+class ListAdapter (private val fuelEntries: ArrayList<FuelEntry>, listener: ListAdapterListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+
+    var listener = WeakReference<ListAdapterListener>(listener)
 
     // Adapter
 
@@ -17,7 +24,7 @@ class ListAdapter (private val fuelEntries: ArrayList<FuelEntry>) : RecyclerView
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.bind(fuelEntries[position])
+        viewHolder.bind(fuelEntries[position], listener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
@@ -29,10 +36,13 @@ class ListAdapter (private val fuelEntries: ArrayList<FuelEntry>) : RecyclerView
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(fuelEntry: FuelEntry) {
-            itemView.titleTextView.text = fuelEntry.vehicleName
-            itemView.subHeaderTextView.text = fuelEntry.date
-            itemView.subHeaderTextView2.text = fuelEntry.fuelTypeName
+        fun bind(fuelEntry: FuelEntry, listener: WeakReference<ListAdapterListener>) {
+            itemView.titleTextView.text = fuelEntry.vehicleName ?: "N/A"
+            itemView.subHeaderTextView.text = fuelEntry.formattedDateString()
+            itemView.subHeaderTextView2.text = fuelEntry.fuelTypeName ?: "N/A"
+            itemView.setOnClickListener {
+                listener.get()?.itemSelected(fuelEntry)
+            }
         }
     }
 }

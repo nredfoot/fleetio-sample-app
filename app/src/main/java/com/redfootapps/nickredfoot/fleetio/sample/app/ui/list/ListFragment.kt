@@ -19,11 +19,15 @@ import kotlinx.android.synthetic.main.fragment_list.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import com.redfootapps.nickredfoot.fleetio.sample.app.ui.details.DetailsDialogFragment
+import android.support.v7.widget.DividerItemDecoration
+import com.redfootapps.nickredfoot.fleetio.sample.app.router.AppRouter
+import com.redfootapps.nickredfoot.fleetio.sample.app.router.AppRouterInterface
 
-/**
- * A placeholder fragment containing a simple view.
- */
-class ListFragment : Fragment() {
+
+class ListFragment : Fragment(), ListAdapterListener {
+
+    lateinit var router: AppRouterInterface
 
     private var listAdapter: ListAdapter? = null
     private var compositeDisposable: CompositeDisposable? = null
@@ -39,6 +43,8 @@ class ListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        router = AppRouter(this)
 
         compositeDisposable = CompositeDisposable()
     }
@@ -65,6 +71,12 @@ class ListFragment : Fragment() {
     private fun setupRecylerView() {
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                context!!,
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
     fun loadFuelEntries() {
@@ -89,12 +101,33 @@ class ListFragment : Fragment() {
     fun handleResponse(fuelEntries: List<FuelEntry>) {
         fuelEntriesArrayList = ArrayList(fuelEntries)
         fuelEntriesArrayList?.let {
-            listAdapter = ListAdapter(it)
+            listAdapter = ListAdapter(it, this)
             recyclerView.adapter = listAdapter
         }
     }
 
     fun handleError(throwable: Throwable) {
         val error = true
+    }
+
+    // ListAdapterListener
+
+    override fun itemSelected(fuelEntry: FuelEntry) {
+        val detailsDialogModel = DetailsDialogFragment.DetailsDialogModel(
+            fuelEntry.formattedDateString(),
+            fuelEntry.vehicleName,
+            if (fuelEntry.totalAmount != null) context?.getString(R.string.money_format, fuelEntry.totalAmount) else "N/A",
+            if (fuelEntry.costPerMile != null) context?.getString(R.string.money_format, fuelEntry.costPerMile) else "N/A",
+            if (fuelEntry.usGallons != null) context?.getString(R.string.money_format, fuelEntry.usGallons) else "N/A",
+            fuelEntry.fuelTypeName,
+            if (fuelEntry.pricePerVolumeUnit != null) context?.getString(R.string.money_format, fuelEntry.pricePerVolumeUnit) else "N/A",
+            fuelEntry.vendorName,
+            fuelEntry.reference
+        )
+
+        router.navigateToDetails(detailsDialogModel)
+//        val dialog = DetailsDialogFragment.newInstance(detailsDialogModel)
+//        val fragmentTransation = fragmentManager?.beginTransaction()
+//        dialog.show(fragmentTransation, "Details Dialog Fragment")
     }
 }
