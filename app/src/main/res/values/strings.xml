@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Fleetio Sample App</string>
+
+    <string name="date">Date</string>
+    <string name="double_format">%.2f</string>
+
+    <string name="fuel_entry_details">Fuel Entry Details</string>
+
     <string name="money_format">$%.2f</string>
     <string name="tab_text_1">List</string>
     <string name="tab_text_2">Map</string>

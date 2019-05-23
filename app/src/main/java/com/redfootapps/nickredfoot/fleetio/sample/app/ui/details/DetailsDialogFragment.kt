@@ -1,5 +1,6 @@
 package com.redfootapps.nickredfoot.fleetio.sample.app.ui.details
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.widget.DividerItemDecoration
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
+import com.redfootapps.nickredfoot.fleetio.sample.app.models.FuelEntry
 import java.io.Serializable
 import kotlinx.android.synthetic.main.fragment_details_dialog.*
 import kotlinx.android.synthetic.main.fragment_list.recyclerView
@@ -18,23 +20,21 @@ class DetailsDialogFragment : DialogFragment() {
 
     // Models
 
-    data class DetailsDialogModel(
-        var date: String? = "",
-        var vehicleName: String? = "",
-        var cost: String? = "",
-        var costPerMile: String? = "",
-        var gallons: String? = "",
-        var fuelType: String? = "",
-        var pricePerGallon: String? = "",
-        var vendor: String? = "",
-        var referenceNumber: String? = ""
-    ) : Serializable
+    data class DetailsDialogModel(var date: String? = "",
+                                  var vehicleName: String? = "",
+                                  var cost: String? = "",
+                                  var costPerMile: String? = "",
+                                  var gallons: String? = "",
+                                  var fuelType: String? = "",
+                                  var pricePerGallon: String? = "",
+                                  var vendor: String? = "",
+                                  var referenceNumber: String? = "") : Serializable
 
     // Instance Variables
 
     private var detailsAdapter: DetailsAdapter? = null
 
-    lateinit var detailsDialogModel: DetailsDialogModel
+    private lateinit var detailsDialogModel: DetailsDialogModel
 
     // Constructor
 
@@ -56,7 +56,10 @@ class DetailsDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setStyle(STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
+        setStyle(
+            STYLE_NORMAL,
+            R.style.AppTheme_FullScreenDialog
+        )
 
         detailsDialogModel = arguments?.getSerializable("details_dialog_model") as DetailsDialogModel
     }
@@ -89,7 +92,7 @@ class DetailsDialogFragment : DialogFragment() {
 
     fun setupToolBar() {
         toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp)
-        toolbar.title = "Fuel Entry Details"
+        toolbar.title = context?.getString(R.string.fuel_entry_details)
         toolbar.setNavigationOnClickListener{ dismiss() }
     }
 

@@ -17,18 +17,6 @@
                 android:paddingStart="6dp"
                 app:contentInsetStartWithNavigation="0dp" />
 
-        <!--<TextView-->
-                <!--android:id="@+id/title"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:gravity="center"-->
-                <!--android:minHeight="?actionBarSize"-->
-                <!--android:padding="@dimen/appbar_padding"-->
-                <!--android:text="Details"-->
-                <!--android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"/>-->
-
-
-
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout

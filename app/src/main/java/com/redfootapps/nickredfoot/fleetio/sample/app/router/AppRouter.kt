@@ -8,13 +8,7 @@ interface AppRouterInterface {
     fun navigateToDetails(detailsDialogModel: DetailsDialogFragment.DetailsDialogModel)
 }
 
-class AppRouter: AppRouterInterface {
-
-    // Constructor
-
-    constructor(fragment: Fragment) {
-        this.fragment = WeakReference(fragment)
-    }
+class AppRouter(fragment: Fragment) : AppRouterInterface {
 
     // Instance Variables
 
@@ -26,5 +20,9 @@ class AppRouter: AppRouterInterface {
         val dialog = DetailsDialogFragment.newInstance(detailsDialogModel)
         val fragmentTransation = fragment.get()?.fragmentManager?.beginTransaction()
         dialog.show(fragmentTransation, "Details Dialog Fragment")
+    }
+
+    init {
+        this.fragment = WeakReference(fragment)
     }
 }

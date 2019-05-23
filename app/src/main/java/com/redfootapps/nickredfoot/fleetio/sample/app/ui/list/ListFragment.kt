@@ -21,6 +21,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import com.redfootapps.nickredfoot.fleetio.sample.app.ui.details.DetailsDialogFragment
 import android.support.v7.widget.DividerItemDecoration
+import android.widget.Toast
 import com.redfootapps.nickredfoot.fleetio.sample.app.router.AppRouter
 import com.redfootapps.nickredfoot.fleetio.sample.app.router.AppRouterInterface
 
@@ -107,7 +108,10 @@ class ListFragment : Fragment(), ListAdapterListener {
     }
 
     fun handleError(throwable: Throwable) {
-        val error = true
+        val toast = Toast(context)
+        toast.duration = Toast.LENGTH_LONG
+        toast.setText("Network request failed. Please try again.")
+        toast.show()
     }
 
     // ListAdapterListener
@@ -118,16 +122,12 @@ class ListFragment : Fragment(), ListAdapterListener {
             fuelEntry.vehicleName,
             if (fuelEntry.totalAmount != null) context?.getString(R.string.money_format, fuelEntry.totalAmount) else "N/A",
             if (fuelEntry.costPerMile != null) context?.getString(R.string.money_format, fuelEntry.costPerMile) else "N/A",
-            if (fuelEntry.usGallons != null) context?.getString(R.string.money_format, fuelEntry.usGallons) else "N/A",
+            if (fuelEntry.usGallons != null) context?.getString(R.string.double_format, fuelEntry.usGallons) else "N/A",
             fuelEntry.fuelTypeName,
             if (fuelEntry.pricePerVolumeUnit != null) context?.getString(R.string.money_format, fuelEntry.pricePerVolumeUnit) else "N/A",
             fuelEntry.vendorName,
             fuelEntry.reference
         )
-
         router.navigateToDetails(detailsDialogModel)
-//        val dialog = DetailsDialogFragment.newInstance(detailsDialogModel)
-//        val fragmentTransation = fragmentManager?.beginTransaction()
-//        dialog.show(fragmentTransation, "Details Dialog Fragment")
     }
 }

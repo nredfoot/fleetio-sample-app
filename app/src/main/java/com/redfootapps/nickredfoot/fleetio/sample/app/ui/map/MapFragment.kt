@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
@@ -18,7 +19,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
@@ -98,7 +98,10 @@ class MapFragment: Fragment() {
 
 
     fun handleError(throwable: Throwable) {
-        val error = true
+        val toast = Toast(context)
+        toast.duration = Toast.LENGTH_LONG
+        toast.setText("Network request failed. Please try again.")
+        toast.show()
     }
 
     fun addMarkers(fuelEntries: List<FuelEntry>) {
@@ -126,28 +129,25 @@ class MapFragment: Fragment() {
                 }
             }
 
-            googleMap.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
-                override fun onMarkerClick(marker: Marker): Boolean {
-                    if (markerHashMap.contains(marker)) {
-                        markerHashMap[marker]?.let { fuelEntry ->
-                            val detailsDialogModel = DetailsDialogFragment.DetailsDialogModel(
-                                fuelEntry.formattedDateString(),
-                                fuelEntry.vehicleName ?: "N/A",
-                                if (fuelEntry.totalAmount != null) context?.getString(R.string.money_format, fuelEntry.totalAmount) else "N/A",
-                                if (fuelEntry.costPerMile != null) context?.getString(R.string.money_format, fuelEntry.costPerMile) else "N/A",
-                                if (fuelEntry.usGallons != null) context?.getString(R.string.money_format, fuelEntry.usGallons) else "N/A",
-                                fuelEntry.fuelTypeName,
-                                if (fuelEntry.pricePerVolumeUnit != null) context?.getString(R.string.money_format, fuelEntry.pricePerVolumeUnit) else "N/A",
-                                fuelEntry.vendorName,
-                                fuelEntry.reference
-                            )
-
-                            router.navigateToDetails(detailsDialogModel)
-                        }
+            googleMap.setOnMarkerClickListener { marker ->
+                if (markerHashMap.contains(marker)) {
+                    markerHashMap[marker]?.let { fuelEntry ->
+                        val detailsDialogModel = DetailsDialogFragment.DetailsDialogModel(
+                            fuelEntry.formattedDateString(),
+                            fuelEntry.vehicleName,
+                            if (fuelEntry.totalAmount != null) context?.getString(R.string.money_format, fuelEntry.totalAmount) else "N/A",
+                            if (fuelEntry.costPerMile != null) context?.getString(R.string.money_format, fuelEntry.costPerMile) else "N/A",
+                            if (fuelEntry.usGallons != null) context?.getString(R.string.double_format, fuelEntry.usGallons) else "N/A",
+                            fuelEntry.fuelTypeName,
+                            if (fuelEntry.pricePerVolumeUnit != null) context?.getString(R.string.money_format, fuelEntry.pricePerVolumeUnit) else "N/A",
+                            fuelEntry.vendorName,
+                            fuelEntry.reference
+                        )
+                        router.navigateToDetails(detailsDialogModel)
                     }
-                    return false
                 }
-            })
+                false
+            }
 
 
             val bounds = boundsBuilder.build()
