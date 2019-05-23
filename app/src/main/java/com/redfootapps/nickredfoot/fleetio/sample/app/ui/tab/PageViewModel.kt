@@ -1,10 +1,9 @@
-package com.redfootapps.nickredfoot.fleetio.sample.app.ui.main
+package com.redfootapps.nickredfoot.fleetio.sample.app.ui.tab
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
 
 class PageViewModel : ViewModel() {
 

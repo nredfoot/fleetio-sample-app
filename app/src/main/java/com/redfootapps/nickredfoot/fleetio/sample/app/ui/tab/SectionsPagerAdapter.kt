@@ -1,10 +1,12 @@
-package com.redfootapps.nickredfoot.fleetio.sample.app.ui.main
+package com.redfootapps.nickredfoot.fleetio.sample.app.ui.tab
 
 import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
+import com.redfootapps.nickredfoot.fleetio.sample.app.ui.list.ListFragment
+import com.redfootapps.nickredfoot.fleetio.sample.app.ui.map.MapFragment
 
 private val TAB_TITLES = arrayOf(
     R.string.tab_text_1,
@@ -15,14 +17,12 @@ private val TAB_TITLES = arrayOf(
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
+class SectionsPagerAdapter(private val context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
         return when (position) {
-            0 -> ListFragment.newInstance(position + 1)
-            else -> MapFragment.newInstance(position + 1)
+            0 -> ListFragment.newInstance()
+            else -> MapFragment.newInstance()
         }
     }
 
@@ -31,7 +31,6 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : 
     }
 
     override fun getCount(): Int {
-        // Show 2 total pages.
         return 2
     }
 }

@@ -1,4 +1,4 @@
-package com.redfootapps.nickredfoot.fleetio.sample.app.ui.main
+package com.redfootapps.nickredfoot.fleetio.sample.app.ui.list
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -30,8 +30,8 @@ class ListAdapter (private val fuelEntries: ArrayList<FuelEntry>) : RecyclerView
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(fuelEntry: FuelEntry) {
-            itemView.titleTextView.text = fuelEntry.date
-            itemView.subHeaderTextView.text = fuelEntry.vehicleName
+            itemView.titleTextView.text = fuelEntry.vehicleName
+            itemView.subHeaderTextView.text = fuelEntry.date
             itemView.subHeaderTextView2.text = fuelEntry.fuelTypeName
         }
     }
