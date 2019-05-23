@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
-import kotlinx.android.synthetic.main.fragment_list.*
 import java.io.Serializable
+import kotlinx.android.synthetic.main.fragment_details_dialog.*
+import kotlinx.android.synthetic.main.fragment_list.recyclerView
+
 
 class DetailsDialogFragment : DialogFragment() {
 
@@ -54,6 +56,8 @@ class DetailsDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setStyle(STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
+
         detailsDialogModel = arguments?.getSerializable("details_dialog_model") as DetailsDialogModel
     }
 
@@ -65,10 +69,29 @@ class DetailsDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolBar()
         setupRecyclerView()
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        // Make dialog full screen
+        dialog?.let {
+            val width = ViewGroup.LayoutParams.MATCH_PARENT
+            val height = ViewGroup.LayoutParams.MATCH_PARENT
+            dialog.window?.setLayout(width, height)
+            dialog.window?.setWindowAnimations(R.style.AppTheme_Slide)
+        }
+    }
+
     // Setup
+
+    fun setupToolBar() {
+        toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp)
+        toolbar.title = "Fuel Entry Details"
+        toolbar.setNavigationOnClickListener{ dismiss() }
+    }
 
     fun setupRecyclerView() {
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
