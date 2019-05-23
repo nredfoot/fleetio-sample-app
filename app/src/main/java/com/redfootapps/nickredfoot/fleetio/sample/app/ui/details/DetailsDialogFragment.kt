@@ -1,6 +1,5 @@
 package com.redfootapps.nickredfoot.fleetio.sample.app.ui.details
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.widget.DividerItemDecoration
@@ -10,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
-import com.redfootapps.nickredfoot.fleetio.sample.app.models.FuelEntry
 import java.io.Serializable
 import kotlinx.android.synthetic.main.fragment_details_dialog.*
 import kotlinx.android.synthetic.main.fragment_list.recyclerView
