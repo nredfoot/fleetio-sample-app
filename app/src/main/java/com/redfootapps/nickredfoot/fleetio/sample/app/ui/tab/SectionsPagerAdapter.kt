@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
+import com.redfootapps.nickredfoot.fleetio.sample.app.models.FuelEntry
 import com.redfootapps.nickredfoot.fleetio.sample.app.ui.list.ListFragment
 import com.redfootapps.nickredfoot.fleetio.sample.app.ui.map.MapFragment
 

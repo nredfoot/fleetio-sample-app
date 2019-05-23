@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
 import com.redfootapps.nickredfoot.fleetio.sample.app.models.FuelEntry
 import com.redfootapps.nickredfoot.fleetio.sample.app.services.FleetioApiService
-import com.redfootapps.nickredfoot.fleetio.sample.app.ui.tab.PageViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -26,11 +25,10 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 class ListFragment : Fragment() {
 
-    private lateinit var pageViewModel: PageViewModel
-
     private var listAdapter: ListAdapter? = null
-    private var fuelEntriesArrayList: ArrayList<FuelEntry>? = null
     private var compositeDisposable: CompositeDisposable? = null
+
+    var fuelEntriesArrayList: ArrayList<FuelEntry>? = null
 
     companion object {
         @JvmStatic
@@ -41,9 +39,7 @@ class ListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        pageViewModel = ViewModelProviders.of(this).get(PageViewModel::class.java).apply {
-//            setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
-//        }
+
         compositeDisposable = CompositeDisposable()
     }
 
