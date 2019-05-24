@@ -13,11 +13,16 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
 import com.redfootapps.nickredfoot.fleetio.sample.app.ui.BaseFragment
+import com.redfootapps.nickredfoot.fleetio.sample.app.viewmodel.FuelEntryViewModel
 
 
 class MapFragment: BaseFragment() {
 
+    // Instance Variables
+
     private var markerHashMap: HashMap<Marker, FuelEntry> = HashMap()
+
+    // Constructor
 
     companion object  {
         @JvmStatic
@@ -27,7 +32,6 @@ class MapFragment: BaseFragment() {
     }
 
     // Lifecycle
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_map, container, false)
@@ -51,9 +55,17 @@ class MapFragment: BaseFragment() {
         mapView.onPause()
     }
 
-    override fun handleResponse(fuelEntries: List<FuelEntry>) {
-        fuelEntriesArrayList = ArrayList(fuelEntries)
+    override fun observeFuelEntries(viewModel: FuelEntryViewModel) {
+        viewModel.fuelEntriesArrayList.observe(this, android.arch.lifecycle.Observer {
+            it?.let {
+                loadMap(it)
+            }
+        })
+    }
 
+    // Helpers
+
+    fun loadMap(fuelEntries: List<FuelEntry>) {
         mapView.getMapAsync { googleMap ->
             googleMap.clear()
 
@@ -87,7 +99,7 @@ class MapFragment: BaseFragment() {
 
 
             val bounds = boundsBuilder.build()
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50))
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
         }
     }
 }

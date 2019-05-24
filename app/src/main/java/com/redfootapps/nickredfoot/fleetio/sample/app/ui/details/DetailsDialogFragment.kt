@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_list.recyclerView
 
 class DetailsDialogFragment : DialogFragment() {
 
-    // Models
+    // Model
 
     data class DetailsDialogModel(var date: String? = "",
                                   var vehicleName: String? = "",

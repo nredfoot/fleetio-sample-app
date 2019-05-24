@@ -9,6 +9,8 @@ import kotlinx.android.synthetic.main.item_detail.view.*
 
 class DetailsAdapter (private val detailModels: ArrayList<DetailsModel>) : RecyclerView.Adapter<DetailsAdapter.ViewHolder>() {
 
+    // Model
+
     data class DetailsModel(
         var title: String,
         var value: String

@@ -13,7 +13,9 @@ interface ListAdapterListener {
     fun itemSelected(fuelEntry: FuelEntry)
 }
 
-class ListAdapter (private val fuelEntries: ArrayList<FuelEntry>, listener: ListAdapterListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+class ListAdapter (private val fuelEntries: List<FuelEntry>, listener: ListAdapterListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
+
+    // Instance Variables
 
     var listener = WeakReference<ListAdapterListener>(listener)
 

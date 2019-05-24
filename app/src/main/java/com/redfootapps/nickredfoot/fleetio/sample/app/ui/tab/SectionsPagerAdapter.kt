@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.redfootapps.nickredfoot.fleetio.sample.app.R
-import com.redfootapps.nickredfoot.fleetio.sample.app.models.FuelEntry
 import com.redfootapps.nickredfoot.fleetio.sample.app.ui.list.ListFragment
 import com.redfootapps.nickredfoot.fleetio.sample.app.ui.map.MapFragment
 
@@ -14,16 +13,15 @@ private val TAB_TITLES = arrayOf(
     R.string.tab_text_2
 )
 
-/**
- * A [FragmentPagerAdapter] that returns a fragment corresponding to
- * one of the sections/tabs/pages.
- */
-class SectionsPagerAdapter(private val context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+class SectionsPagerAdapter(private val context: Context, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager)  {
+
+    // FragmentPagerAdapter
 
     override fun getItem(position: Int): Fragment {
+
         return when (position) {
             0 -> ListFragment.newInstance()
-            else -> MapFragment.newInstance()
+            else ->  MapFragment.newInstance()
         }
     }
 

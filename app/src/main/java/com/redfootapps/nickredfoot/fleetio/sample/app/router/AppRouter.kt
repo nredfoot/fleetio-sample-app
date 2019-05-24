@@ -18,8 +18,8 @@ class AppRouter(fragment: Fragment) : AppRouterInterface {
 
     override fun navigateToDetails(detailsDialogModel: DetailsDialogFragment.DetailsDialogModel) {
         val dialog = DetailsDialogFragment.newInstance(detailsDialogModel)
-        val fragmentTransation = fragment.get()?.fragmentManager?.beginTransaction()
-        dialog.show(fragmentTransation, "Details Dialog Fragment")
+        val fragmentTransaction = fragment.get()?.fragmentManager?.beginTransaction()
+        dialog.show(fragmentTransaction, "Details Dialog Fragment")
     }
 
     init {
